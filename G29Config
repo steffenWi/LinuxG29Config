@@ -1,0 +1,9 @@
+#!/bin/bash
+newrange=$(zenity --entry --title "Please provide a range input for your wheel" --text "New Range")
+cd /sys/devices
+path=`find -name alternate_modes`
+echo G27 > ${path}
+cd /sys/bus/hid/drivers/logitech
+path=`find -L -ignore_readdir_race -maxdepth 2 -name range 2> /dev/null`
+echo $newrange > ${path}
+
