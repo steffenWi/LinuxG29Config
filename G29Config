@@ -1,8 +1,30 @@
 #!/bin/bash
+usboutput=$(lsusb -d 046d:c29b)
+if [[ -z  $usboutput  ]]
+then
+	usboutput=$(lsusb -d 046d:c24f)
+	if [[  -z  $usboutput ]]
+	then
+		zenity --error --text "Please connect the G29 wheel with your computer and try again!"
+		exit 1
+	fi
+	cd /sys/devices
+	path=`find -name alternate_modes`
+	echo G27 > ${path}
+	(
+		echo "12"; sleep 1
+		echo "24"; sleep 1
+		echo "36"; sleep 1
+		echo "48"; sleep 1
+		echo "60"; sleep 1
+		echo "72"; sleep 1
+		echo "84"; sleep 1
+		echo "96"; sleep 1
+		echo "100"; sleep 1
+	) |zenity --progress --text "Waiting for wheel to finish calibrating/switching" --auto-close --percentage=0 #wait until the wheel is switched to G27 mode
+fi
+
 newrange=$(zenity --entry --title "Please provide a range input for your wheel" --text "New Range")
-cd /sys/devices
-path=`find -name alternate_modes`
-echo G27 > ${path}
 cd /sys/bus/hid/drivers/logitech
 path=`find -L -ignore_readdir_race -maxdepth 2 -name range 2> /dev/null`
 echo $newrange > ${path}
