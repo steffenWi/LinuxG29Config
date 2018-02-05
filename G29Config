@@ -24,6 +24,6 @@ then
 fi
 
 newrange=$(zenity --entry --title "Please provide a range input for your wheel" --text "New Range")
-path=`find /sys/bus/hid/drivers/logitech -L -ignore_readdir_race -maxdepth 2 -name range 2> /dev/null`
+path=`find -L /sys/bus/hid/drivers/logitech -ignore_readdir_race -maxdepth 2 -name range 2> /dev/null`
 echo $newrange > ${path}
 
